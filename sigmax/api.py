@@ -183,7 +183,26 @@ class Client:
             }
 
         out = await self.wait_for(SEND_MESSAGE, data)
-        return out
+        message = Message(out.payload)
+        return message
+    
+
+    async def edit_message(self,
+        chat_id: int,
+        message_id: int,
+        text: str
+    ):
+        data = {
+            "chatId": chat_id,
+            "messageId": message_id,
+            "text": text,
+        }
+
+        out = await self.wait_for(EDIT_MESSAGE, data)
+        data = out.payload
+        data['chatId'] = chat_id
+        message = Message(data)
+        return message
 
         
     # logging in
