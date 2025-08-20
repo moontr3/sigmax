@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sigmax"
+dependencies = ["pydantic", "websockets"]
+version = "0.0.1"
+requires-python = ">=3.10"
+authors = [
+    { name = "moontr3", email = "contact@moontr3.ru" },
+]
+description = "Python-библиотека для работы с польовательским API мессенджера [MAX](https://max.ru/) (OneMe)."
