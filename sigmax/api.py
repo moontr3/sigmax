@@ -184,6 +184,15 @@ class Client:
             marker = out.payload['marker']
 
 
+    # users
+
+
+    async def get_user_by_phone(self, phone: str) -> User:
+        data = {'phone': phone}
+        out = await self.wait_for(GET_USER_BY_PHONE, data)
+        return User.from_payload(out.payload['contact'])
+
+
     # messages
     
 

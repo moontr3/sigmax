@@ -2,8 +2,7 @@ from typing import *
 from pydantic import BaseModel
 
 
-class ProfileInfo(BaseModel):
-    account_status: int
+class User(BaseModel):
     base_url: str
     base_raw_url: str
 
@@ -19,8 +18,7 @@ class ProfileInfo(BaseModel):
 
 
     @classmethod
-    def from_payload(cls, payload: dict) -> "ProfileInfo":
-        cls.account_status: int = payload['accountStatus']
+    def from_payload(cls, payload: dict) -> "User":
         cls.base_url: str = payload['baseUrl']
         cls.base_raw_url: str = payload['baseRawUrl']
         
@@ -29,7 +27,7 @@ class ProfileInfo(BaseModel):
         cls.last_name: str | None = payload['names'][0].get('lastName')
         cls.description: str = payload['description']
 
-        cls.phone: int = payload['phone']
+        cls.phone: int | None = payload.get('phone')
         cls.options: list[str] = payload['options']
         cls.photo_id: int | None = payload['photoId']
         cls.id: int = payload['id']
@@ -39,13 +37,13 @@ class ProfileInfo(BaseModel):
 
 class UserInfo(BaseModel):
     id: int
-    profile: ProfileInfo
+    user: User
     
 
     @classmethod
     def from_payload(cls, payload: dict) -> "UserInfo":
-        cls.profile: ProfileInfo = ProfileInfo.from_payload(payload['profile'])
-        cls.id = cls.profile.id
+        cls.user: User = User.from_payload(payload['profile'])
+        cls.id = cls.user.id
 
         return cls
 
