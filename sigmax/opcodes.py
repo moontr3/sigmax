@@ -8,15 +8,17 @@ SYNC_REACTION_DATA = 27 # Syncs reaction, sticker pack, favorite stickers data
 GET_REACTION_MEDIA = 28 # Can return list of sticker, animoji, sticker set data by IDs
 GET_CONTACTS = 32 # Fetch users by their IDs
 GET_PRESENCE = 35 # Fetch users' last seen time by their IDs
+GET_USER_BY_PHONE = 46 # Fetches a user by their phone number
+GET_CHATS_BY_ID = 48 # Fetches chats by their IDs
 GET_PREVIEW_MESSAGES = 49 # * Fetches recent messages in a chat
 POST_CHAT_ACTION = 50 # * Post an action in a chat (like read messages)
-GET_CHATS = 53 # ** Continuously fetch chats.
-               # Not sure what this is for but it has a pagination marker and returns a list of chats and DM chats
+GET_CHATS = 53 # Continuously fetch chats
 SEND_MESSAGE = 64 # Post a message in a chat
 POST_TYPING = 65 # Post a typing / sending media indicator for a chat
 DELETE_MESSAGE = 66 # Delete an existing message for yourself or for the whole chat 
 EDIT_MESSAGE = 67 # Edit an existing message
 GET_MESSAGES = 71 # Fetch messages from a chat by their IDs
+GET_PHOTO_UPLOAD_URL = 80 # Get a URL to upload a photo to
 SUBSCRIBE_TO_CHAT = 75 # *** Has a "subscribe" boolean and a chat ID. API returns null
                        # API seems to send new messages regardless of whether the chat is subscribed or not though
 SEND_BUTTON_PRESS = 118 # Send a button press to a bot

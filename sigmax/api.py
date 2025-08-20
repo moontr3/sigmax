@@ -24,6 +24,7 @@ class Client:
         self.seq: int = 0
         self.awaiting_reqs: Dict[int, "Request | None"] = {}
         self.receiving = False
+        self.me: "UserInfo | None" = None
 
         self.handlers: Dict[str, List[Callable]] = {
             "any": [],
@@ -99,7 +100,7 @@ class Client:
             
         # on_message handler
         if req.opcode == RECEIVE_MESSAGE:
-            message = Message(req.payload)
+            message = Message.from_payload(req.payload)
 
             for handler in self.handlers["message"]:
                 asyncio.create_task(handler(message))
@@ -156,7 +157,34 @@ class Client:
         return decorator
     
 
-    # functions
+    # chats
+
+
+    async def get_chats_by_id(self, ids: list[int]) -> list[Chat]:
+        assert isinstance(ids, list), "IDs must be a list"
+        data = {'chatIds': ids}
+        out = await self.wait_for(GET_CHATS_BY_ID, data)
+        return [Chat.from_payload(chat) for chat in out.payload['chats']]
+
+
+    async def get_chats(self, marker: int = None) -> AsyncIterator[Chat]:
+        if marker is None:
+            marker = time.time_ns()
+
+        while True:
+            data = {'marker': marker}
+            out = await self.wait_for(GET_CHATS, data)
+
+            for chat in out.payload['chats']:
+                yield Chat.from_payload(chat)
+
+            if not out.payload['marker']:
+                return
+
+            marker = out.payload['marker']
+
+
+    # messages
     
 
     async def send_message(self,
@@ -183,7 +211,7 @@ class Client:
             }
 
         out = await self.wait_for(SEND_MESSAGE, data)
-        message = Message(out.payload)
+        message = Message.from_payload(out.payload)
         return message
     
 
@@ -201,7 +229,7 @@ class Client:
         out = await self.wait_for(EDIT_MESSAGE, data)
         data = out.payload
         data['chatId'] = chat_id
-        message = Message(data)
+        message = Message.from_payload(data)
         return message
 
         
@@ -245,6 +273,8 @@ class Client:
                 "chatsCount": 0
             })
             resp = await self.recv_json()
+
+            self.me = UserInfo.from_payload(resp.payload)
 
             for i in self.handlers['start']:
                 asyncio.create_task(i())
